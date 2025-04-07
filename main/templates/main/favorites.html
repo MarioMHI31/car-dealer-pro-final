@@ -1,0 +1,23 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Anunțurile tale favorite</h2>
+    <div class="row">
+        {% for car in cars %}
+            <div class="col-md-6 mb-4">
+                <div class="card shadow">
+                    <img src="{{ car.main_image.url }}" class="card-img-top" alt="{{ car.brand }} {{ car.model }}" style="height: 300px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ car.brand }} {{ car.model }}</h5>
+                        <p class="card-text">{{ car.price }} €</p>
+                        <a href="{% url 'ad_detail' car.id %}" class="btn btn-primary w-100">Vezi detalii</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center">Nu ai adăugat încă favorite.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

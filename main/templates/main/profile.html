@@ -1,0 +1,29 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg p-4">
+        <h2 class="text-center text-primary">Profilul meu</h2>
+        <p class="text-center">Informațiile contului tău</p>
+
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Prenume:</strong> {{ user.first_name }}</p>
+                <p><strong>Nume:</strong> {{ user.last_name }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Telefon:</strong> {{ user.profile.phone }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Vârstă:</strong> {{ user.profile.age }}</p>
+                <p><strong>Adresă:</strong> {{ user.profile.address }}</p>
+                <p><strong>Descriere:</strong> {{ user.profile.description }}</p>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'edit_profile' %}" class="btn btn-primary">Editează Profilul</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

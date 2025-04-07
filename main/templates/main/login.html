@@ -1,0 +1,39 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Autentificare</h2>
+
+    <!-- Afișarea mesajelor de eroare -->
+    {% if messages %}
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <!-- Formularul de login -->
+    <form method="post" action="{% url 'login' %}" class="mx-auto w-50 p-4 bg-light shadow rounded">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.GET.next }}">  <!-- Redirecționare corectă -->
+
+        <div class="mb-3">
+            <label for="id_username" class="form-label">Nume utilizator:</label>
+            <input type="text" name="username" id="id_username" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_password" class="form-label">Parolă:</label>
+            <input type="password" name="password" id="id_password" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Autentificare</button>
+    </form>
+
+    <p class="text-center mt-3">Nu ai cont? <a href="{% url 'signup' %}">Înregistrează-te aici</a></p>
+</div>
+{% endblock %}
+

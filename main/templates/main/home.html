@@ -1,0 +1,144 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<h2 class="text-center my-4">Anunțurile zilei</h2>
+<div class="container-xl">
+    <div class="row justify-content-center">
+        {% for car in cars %}
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm border-0">
+                    <img src="{{ car.main_image.url }}" class="card-img-top rounded" alt="{{ car.brand }} {{ car.model }}" style="height: 300px; object-fit: cover;">
+
+                    <form method="post" action="{% url 'toggle_favorite' %}" class="favorite-form" data-car-id="{{ car.id }}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-link p-0 favorite-btn">
+                            <i class="fa {% if user.is_authenticated and car in user.profile.favorites.all %}fa-heart text-danger{% else %}fa-heart-o text-secondary{% endif %}"></i>
+                        </button>
+                    </form>
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ car.brand }} {{ car.model }}</h5>
+                        <p class="card-text text-primary fs-5 fw-bold">{{ car.price|intcomma }} €</p>
+                        <p class="card-text mb-2"><strong>Kilometraj:</strong> {{ car.mileage|intcomma }} km</p>
+                        <a href="{% url 'ad_detail' car.id %}" class="btn btn-outline-primary w-100">Vezi detalii</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- 🔹 Secțiune Despre Noi Premium -->
+<div class="container my-5">
+    <h2 class="text-center mb-5 fw-bold">De ce să alegi CarDealerPro?</h2>
+    <div class="row justify-content-center">
+
+        <!-- Card 1 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow card-hover">
+                <div class="image-container">
+                    <img src="{% static 'images/vanzari.jpg' %}" class="card-img-top" alt="Mașini vândute">
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title">
+                        ✅ <span class="counter" data-target="430">0</span>+ Mașini vândute
+                    </h5>
+                    <p class="card-text text-muted">Suntem cea mai activă platformă auto din România. Clienții aleg rapid, ușor și sigur.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow card-hover">
+                <div class="image-container">
+                    <img src="{% static 'images/expert_staff.jpg' %}" class="card-img-top" alt="Agenți de vânzări">
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title">
+                        👨‍💼 <span class="counter" data-target="40">0</span>+ Agenți auto profesioniști
+                    </h5>
+                    <p class="card-text text-muted">Fiecare anunț este verificat manual de o echipă cu experiență în auto și vânzări.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow card-hover">
+                <div class="image-container h-100">
+                    <img src="{% static 'images/siguranta.png' %}" class="card-img-top" alt="Garanție și siguranță">
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title">
+                        🔒 Siguranță și garanție
+                    </h5>
+                    <p class="card-text text-muted">Toate anunțurile sunt atent verificate și vin cu garanția returnării dacă sunt false.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // 🔁 Animarea inimii (favorite)
+    document.querySelectorAll('.favorite-form').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const carId = this.dataset.carId;
+            const csrfToken = this.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            fetch("{% url 'toggle_favorite' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrfToken,
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `car_id=${carId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const icon = this.querySelector('i');
+                    if (data.is_favorite) {
+                        icon.classList.remove('fa-heart-o', 'text-secondary');
+                        icon.classList.add('fa-heart', 'text-danger');
+                    } else {
+                        icon.classList.remove('fa-heart', 'text-danger');
+                        icon.classList.add('fa-heart-o', 'text-secondary');
+                    }
+                }
+            });
+        });
+    });
+
+    // 🔢 Efect animat pentru contorizare cifre (ex: 430+)
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+        const target = +counter.getAttribute('data-target');
+        let count = 0;
+        const speed = 20;
+
+        const update = () => {
+            if (count < target) {
+                count += Math.ceil(target / 100);
+                if (count > target) count = target;
+                counter.innerText = count;
+                setTimeout(update, speed);
+            } else {
+                counter.innerText = target;
+            }
+        };
+        update();
+    });
+</script>
+{% endblock %}
+
+
+

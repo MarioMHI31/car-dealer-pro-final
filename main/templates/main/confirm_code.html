@@ -1,0 +1,17 @@
+{% extends "main/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Verificare cod</h2>
+    <p>Introdu codul de verificare primit pe email.</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="code">Cod de verificare:</label>
+            <input type="text" name="code" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Confirmă codul</button>
+    </form>
+</div>
+{% endblock %}
+

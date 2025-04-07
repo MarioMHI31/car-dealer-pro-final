@@ -1,0 +1,74 @@
+{% extends 'main/base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="container-xl mt-5">
+    <h2 class="text-center mb-4">Anunțuri auto</h2>
+    <div class="row">
+        {% for car in cars %}
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-lg h-100 position-relative">
+                    <a href="{% url 'ad_detail' car.id %}">
+                        <img src="{{ car.main_image.url }}" class="card-img-top" alt="{{ car.brand }} {{ car.model }}" style="height: 300px; object-fit: cover;">
+                    </a>
+
+                    {% if user.is_authenticated %}
+                        <form method="post" action="{% url 'toggle_favorite' %}" class="favorite-form position-absolute top-0 end-0 m-2" data-car-id="{{ car.id }}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link p-0 favorite-btn" title="Adaugă la favorite">
+                                <i class="fa {% if car in user.profile.favorites.all %}fa-heart text-danger{% else %}fa-heart-o text-secondary{% endif %} fa-lg"></i>
+                            </button>
+                        </form>
+                    {% endif %}
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ car.brand }} {{ car.model }}</h5>
+                        <p class="card-text">
+                            <strong>{{ car.price|intcomma }} €</strong><br>
+                            {{ car.year }} · {{ car.mileage|intcomma }} km · {{ car.fuel_type }} · {{ car.horsepower }} CP
+                        </p>
+                        <a href="{% url 'ad_detail' car.id %}" class="btn btn-primary w-100">Vezi detalii</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center">Nu există anunțuri momentan.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.favorite-form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const carId = this.dataset.carId;
+                const csrfToken = this.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                fetch("{% url 'toggle_favorite' %}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": csrfToken,
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: `car_id=${carId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const icon = this.querySelector('i');
+                        icon.classList.toggle('fa-heart');
+                        icon.classList.toggle('fa-heart-o');
+                        icon.classList.toggle('text-danger');
+                        icon.classList.toggle('text-secondary');
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}
+

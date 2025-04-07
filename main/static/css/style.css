@@ -1,0 +1,157 @@
+/* ======== GENERAL ======== */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.container {
+    max-width: 1140px;
+}
+
+.navbar-brand {
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+
+/* ======== CARDURI & AD-URI ======== */
+.card {
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.ad-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.ad-item {
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ======== BANNER ======== */
+.container-fluid.bg-primary {
+    background-image: url("/static/images/image.jpg");
+    background-size: cover;
+    background-position: center bottom;
+    height: 600px;
+    padding: 50px 0;
+    color: white;
+    text-align: center;
+}
+
+/* ======== BUTOANE ======== */
+.btn-lg {
+    width: 100%;
+}
+
+.btn-outline-light:hover {
+    background-color: white;
+    color: #007bff;
+}
+
+/* ======== TOAST MESSAGES ======== */
+.toast {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ======== LIGHT MODE ======== */
+body.light-mode {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+body.light-mode .navbar,
+body.light-mode footer,
+body.light-mode .bg-light {
+    background-color: #007bff !important;
+    color: #ffffff !important;
+}
+
+/* ======== DARK MODE ======== */
+body.dark-mode {
+    background-color: #121212;
+    color: #f1f1f1;
+}
+
+body.dark-mode .navbar,
+body.dark-mode footer,
+body.dark-mode .bg-light {
+    background-color: #1f1f1f !important;
+    color: #f1f1f1 !important;
+}
+
+/* ==== FORMULAR FILTRARE DARK MODE ==== */
+body.dark-mode form.bg-light {
+    background-color: #2a2a2a !important;
+    color: #f1f1f1;
+}
+
+body.dark-mode form.bg-light label {
+    color: #f1f1f1;
+}
+
+body.dark-mode form.bg-light input,
+body.dark-mode form.bg-light select {
+    background-color: #3a3a3a;
+    color: #f1f1f1;
+    border: 1px solid #555;
+}
+
+body.dark-mode form.bg-light input::placeholder,
+body.dark-mode form.bg-light select option {
+    color: #cccccc;
+}
+
+/* ======== SEARCH SECTION ======== */
+form.bg-light {
+    border-radius: 10px;
+}
+
+label {
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+}
+
+/* ======== RESPONSIVE ======== */
+@media (max-width: 768px) {
+    .navbar .btn,
+    .navbar .nav-link {
+        font-size: 0.95rem;
+    }
+
+    .container-fluid.bg-primary {
+        background-size: cover;
+        height: 400px;
+    }
+
+    .ad-list {
+        grid-template-columns: 1fr;
+    }
+
+    form .row .col-md-3,
+    form .row .col-md-4 {
+        margin-bottom: 15px;
+    }
+}
+
