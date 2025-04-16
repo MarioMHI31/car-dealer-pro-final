@@ -71,6 +71,14 @@
                         <option value="Electric">Electric</option>
                     </select>
                 </div>
+                <div class="form-group mb-3">
+                    <label for="transmission">Cutie de viteze</label>
+                    <select class="form-control" id="transmission" name="transmission" required>
+                        <option value="">Alege tipul</option>
+                        <option value="Manuală">Manuală</option>
+                        <option value="Automată">Automată</option>
+                    </select>
+                </div>
                 <div class="col-md-4">
                     <label>Cai putere (CP)</label>
                     <input type="number" name="horsepower" class="form-control">
@@ -103,10 +111,23 @@
                 <input type="file" name="images" id="id_images" class="form-control" accept="image/*" multiple>
                 <small class="text-muted">Ține apăsat CTRL sau SHIFT pentru a selecta mai multe imagini.</small>
             </div>
+            <!-- Anunțul zilei -->
             <div class="form-check mt-3">
-                <input type="checkbox" name="featured" class="form-check-input" id="id_featured">
-                <label class="form-check-label" for="id_featured">Anunțul zilei?</label>
+              <input class="form-check-input" type="checkbox" name="featured" id="featured">
+              <label class="form-check-label" for="featured">
+                Anunțul zilei? <span class="badge bg-success text-light">Home</span>
+              </label>
             </div>
+
+            <!-- Premium -->
+            <div class="form-check mt-2">
+              <input class="form-check-input" type="checkbox" name="premium" id="premium">
+              <label class="form-check-label" for="premium">
+                Premium? <span class="badge bg-warning text-dark">★ Premium</span>
+              </label>
+            </div>
+
+
 
 
             <button type="submit" class="btn btn-success mt-4 w-100">Publică anunțul</button>

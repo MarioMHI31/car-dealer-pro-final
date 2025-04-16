@@ -25,6 +25,7 @@ def home(request):
 
 
 
+
 def search(request):
     brand = request.GET.get('brand', '')
     model = request.GET.get('model', '')
@@ -63,6 +64,9 @@ def sell(request):
         if form.is_valid():
             car = form.save(commit=False)
             car.seller = request.user
+            car.transmission = request.POST.get('transmission')
+            car.featured = 'featured' in request.POST
+            car.premium = 'premium' in request.POST
             car.save()
 
             images = request.FILES.getlist("images")
@@ -85,7 +89,7 @@ def sell(request):
 
 
 def ads(request):
-    cars = Car.objects.all()
+    cars = Car.objects.all().order_by('-premium', '-id')  # 🔹 PREMIUM PRIMELE
 
     brand = request.GET.get("brand")
     model = request.GET.get("model")
@@ -102,6 +106,7 @@ def ads(request):
     hp_max = request.GET.get("hp_max")
     cc_min = request.GET.get("cc_min")
     cc_max = request.GET.get("cc_max")
+    transmission = request.GET.get("transmission")
 
     if brand:
         cars = cars.filter(brand=brand)
@@ -121,26 +126,26 @@ def ads(request):
         cars = cars.filter(year__gte=year_min)
     if year_max:
         cars = cars.filter(year__lte=year_max)
-
     if km_min:
         cars = cars.filter(mileage__gte=km_min)
     if km_max:
         cars = cars.filter(mileage__lte=km_max)
-
     if hp_min:
         cars = cars.filter(horsepower__gte=hp_min)
     if hp_max:
         cars = cars.filter(horsepower__lte=hp_max)
-
     if cc_min:
         cars = cars.filter(engine_capacity__gte=cc_min)
     if cc_max:
         cars = cars.filter(engine_capacity__lte=cc_max)
+    if transmission:
+        cars = cars.filter(transmission__iexact=transmission)
 
     return render(request, 'main/ads.html', {
         'cars': cars,
         'MODELS_BY_BRAND': MODELS_BY_BRAND
     })
+
 
 
 

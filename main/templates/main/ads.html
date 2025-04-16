@@ -8,10 +8,22 @@
         {% for car in cars %}
             <div class="col-md-3 mb-4">
                 <div class="card shadow-lg h-100 position-relative">
-                    <a href="{% url 'ad_detail' car.id %}">
-                        <img src="{{ car.main_image.url }}" class="card-img-top" alt="{{ car.brand }} {{ car.model }}" style="height: 300px; object-fit: cover;">
-                    </a>
 
+                    <!-- Imagine -->
+                    <div class="position-relative">
+                        <a href="{% url 'ad_detail' car.id %}">
+                            <img src="{{ car.main_image.url }}" class="card-img-top" alt="{{ car.brand }} {{ car.model }}" style="height: 300px; object-fit: cover;">
+                        </a>
+
+                        <!-- Badge PREMIUM -->
+                        {% if car.premium %}
+                            <div class="premium-badge position-absolute start-0 bottom-0 m-2 px-2 py-1 text-white">
+                                ★ PREMIUM
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Favorite -->
                     {% if user.is_authenticated %}
                         <form method="post" action="{% url 'toggle_favorite' %}" class="favorite-form position-absolute top-0 end-0 m-2" data-car-id="{{ car.id }}">
                             {% csrf_token %}
@@ -21,6 +33,7 @@
                         </form>
                     {% endif %}
 
+                    <!-- Conținut card -->
                     <div class="card-body">
                         <h5 class="card-title">{{ car.brand }} {{ car.model }}</h5>
                         <p class="card-text">
@@ -39,6 +52,16 @@
 {% endblock %}
 
 {% block extra_scripts %}
+<style>
+    .premium-badge {
+        background: linear-gradient(45deg, #FFD700, #FF8C00);
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 0.8rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+</style>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.favorite-form').forEach(form => {

@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from .brand_models import MODELS_BY_BRAND
 
-# Lista cu mărcile disponibile
 BRAND_CHOICES = [
     ("Audi", "Audi"),
     ("BMW", "BMW"),
@@ -16,8 +15,6 @@ BRAND_CHOICES = [
     ("Peugeot", "Peugeot"),
     ("Hyundai", "Hyundai"),
 ]
-
-# Lista cu tipurile de caroserie
 CAR_BODY_CHOICES = [
     ("Sedan", "Sedan"),
     ("SUV", "SUV"),
@@ -30,14 +27,13 @@ CAR_BODY_CHOICES = [
     ("Sport", "Sport"),
 ]
 
+TRANSMISSION_CHOICES = [
+    ('Manuală', 'Manuală'),
+    ('Automată', 'Automată'),
+]
 
-
-
-
-# Transformăm cheile în opțiuni pentru marcă
 BRAND_CHOICES = [(brand, brand) for brand in MODELS_BY_BRAND.keys()]
 
-# Model choices se generează din toate modelele existente
 ALL_MODEL_CHOICES = [(model, model) for models_list in MODELS_BY_BRAND.values() for model in models_list]
 
 class Car(models.Model):
@@ -55,10 +51,12 @@ class Car(models.Model):
     location = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=20)
     description = models.TextField()
+    transmission = models.CharField(max_length=20, choices=TRANSMISSION_CHOICES, default='Manuală')
     main_image = models.ImageField(upload_to='car_images/')
     images = models.ManyToManyField('CarImage', blank=True, related_name="car_images")
 
-    featured = models.BooleanField(default=False)
+    featured = models.BooleanField(default=False)  # Pentru anunțul zilei (home)
+    premium = models.BooleanField(default=False)  # Pentru badge + top în ads
 
     def __str__(self):
         return f"{self.brand} {self.model} ({self.year})"
