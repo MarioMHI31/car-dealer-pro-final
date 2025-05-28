@@ -43,13 +43,7 @@ def search(request):
     })
 
 
-#  Afiseaza toate anunturile în pagina Anunțuri
-def ads(request):
-    cars = Car.objects.all().order_by('-id')
-    return render(request, 'main/ads.html', {
-        'cars': cars,
-        'MODELS_BY_BRAND': MODELS_BY_BRAND
-    })
+
 
 #  Detalii pentru fiecare anunț
 def ad_detail(request, car_id):

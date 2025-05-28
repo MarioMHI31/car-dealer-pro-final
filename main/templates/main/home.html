@@ -8,21 +8,34 @@
     <div class="row justify-content-center">
         {% for car in cars %}
             <div class="col-md-3 mb-4">
-                <div class="card shadow-sm border-0">
-                    <img src="{{ car.main_image.url }}" class="card-img-top rounded" alt="{{ car.brand }} {{ car.model }}" style="height: 300px; object-fit: cover;">
+                <div class="card auto-card shadow border rounded-3 h-100 position-relative">
+                    <!-- Badge PREMIUM -->
+                    {% if car.premium %}
+                        <div class="position-absolute top-0 start-0 m-2 px-2 py-1 bg-warning fw-bold rounded text-white">
+                            ★ PREMIUM
+                        </div>
+                    {% endif %}
 
-                    <form method="post" action="{% url 'toggle_favorite' %}" class="favorite-form" data-car-id="{{ car.id }}">
+                    <!-- Imagine -->
+                    <img src="{{ car.main_image.url }}" class="card-img-top rounded-top" alt="{{ car.brand }} {{ car.model }}" style="height: 200px; object-fit: cover;">
+
+                    <!-- Favorite Button -->
+                    <form method="post" action="{% url 'toggle_favorite' %}" class="favorite-form position-absolute top-0 end-0 m-2" data-car-id="{{ car.id }}">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-link p-0 favorite-btn">
+                        <button type="submit" class="btn btn-light rounded-circle shadow-sm p-1">
                             <i class="fa {% if user.is_authenticated and car in user.profile.favorites.all %}fa-heart text-danger{% else %}fa-heart-o text-secondary{% endif %}"></i>
                         </button>
                     </form>
 
+                    <!-- Conținut -->
                     <div class="card-body">
                         <h5 class="card-title">{{ car.brand }} {{ car.model }}</h5>
-                        <p class="card-text text-primary fs-5 fw-bold">{{ car.price|intcomma }} €</p>
-                        <p class="card-text mb-2"><strong>Kilometraj:</strong> {{ car.mileage|intcomma }} km</p>
-                        <a href="{% url 'ad_detail' car.id %}" class="btn btn-outline-primary w-100">Vezi detalii</a>
+                        <p class="card-text text-primary fw-bold fs-5">{{ car.price|intcomma }} €</p>
+                        <p class="card-text text-muted small mb-1"><strong>An:</strong> {{ car.year }}</p>
+                        <p class="card-text text-muted small mb-1"><strong>Kilometraj:</strong> {{ car.mileage|intcomma }} km</p>
+                        <p class="card-text text-muted small mb-1"><strong>Combustibil:</strong> {{ car.fuel_type }}</p>
+                        <p class="card-text text-muted small"><strong>Putere:</strong> {{ car.horsepower }} CP</p>
+                        <a href="{% url 'ad_detail' car.id %}" class="btn btn-primary w-100 mt-2">Vezi detalii</a>
                     </div>
                 </div>
             </div>
@@ -30,7 +43,7 @@
     </div>
 </div>
 
-<!-- 🔹 Secțiune Despre Noi Premium -->
+<!-- Secțiune Despre Noi Premium -->
 <div class="container my-5">
     <h2 class="text-center mb-5 fw-bold">De ce să alegi CarDealerPro?</h2>
     <div class="row justify-content-center">
@@ -38,9 +51,7 @@
         <!-- Card 1 -->
         <div class="col-md-4 mb-4">
             <div class="card h-100 border-0 shadow card-hover">
-                <div class="image-container">
-                    <img src="{% static 'images/vanzari.jpg' %}" class="card-img-top" alt="Mașini vândute">
-                </div>
+                <img src="{% static 'images/vanzari.jpg' %}" class="card-img-top" alt="Mașini vândute">
                 <div class="card-body text-center">
                     <h5 class="card-title">
                         ✅ <span class="counter" data-target="430">0</span>+ Mașini vândute
@@ -53,9 +64,7 @@
         <!-- Card 2 -->
         <div class="col-md-4 mb-4">
             <div class="card h-100 border-0 shadow card-hover">
-                <div class="image-container">
-                    <img src="{% static 'images/expert_staff.jpg' %}" class="card-img-top" alt="Agenți de vânzări">
-                </div>
+                <img src="{% static 'images/expert_staff.jpg' %}" class="card-img-top" alt="Agenți de vânzări">
                 <div class="card-body text-center">
                     <h5 class="card-title">
                         👨‍💼 <span class="counter" data-target="40">0</span>+ Agenți auto profesioniști
@@ -68,13 +77,9 @@
         <!-- Card 3 -->
         <div class="col-md-4 mb-4">
             <div class="card h-100 border-0 shadow card-hover">
-                <div class="image-container h-100">
-                    <img src="{% static 'images/siguranta.png' %}" class="card-img-top" alt="Garanție și siguranță">
-                </div>
+                <img src="{% static 'images/siguranta.png' %}" class="card-img-top" alt="Garanție și siguranță">
                 <div class="card-body text-center">
-                    <h5 class="card-title">
-                        🔒 Siguranță și garanție
-                    </h5>
+                    <h5 class="card-title">🔒 Siguranță și garanție</h5>
                     <p class="card-text text-muted">Toate anunțurile sunt atent verificate și vin cu garanția returnării dacă sunt false.</p>
                 </div>
             </div>
@@ -86,59 +91,49 @@
 
 {% block extra_scripts %}
 <script>
-    // 🔁 Animarea inimii (favorite)
+    // Favorite toggle
     document.querySelectorAll('.favorite-form').forEach(form => {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
-
             const carId = this.dataset.carId;
             const csrfToken = this.querySelector('[name=csrfmiddlewaretoken]').value;
-
             fetch("{% url 'toggle_favorite' %}", {
                 method: "POST",
-                headers: {
-                    "X-CSRFToken": csrfToken,
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
+                headers: { "X-CSRFToken": csrfToken, "Content-Type": "application/x-www-form-urlencoded" },
                 body: `car_id=${carId}`
-            })
-            .then(response => response.json())
-            .then(data => {
+            }).then(res => res.json()).then(data => {
                 if (data.success) {
                     const icon = this.querySelector('i');
-                    if (data.is_favorite) {
-                        icon.classList.remove('fa-heart-o', 'text-secondary');
-                        icon.classList.add('fa-heart', 'text-danger');
-                    } else {
-                        icon.classList.remove('fa-heart', 'text-danger');
-                        icon.classList.add('fa-heart-o', 'text-secondary');
-                    }
+                    icon.classList.toggle('fa-heart');
+                    icon.classList.toggle('fa-heart-o');
+                    icon.classList.toggle('text-danger');
+                    icon.classList.toggle('text-secondary');
                 }
             });
         });
     });
 
-    // 🔢 Efect animat pentru contorizare cifre (ex: 430+)
+    // Animated counters
     const counters = document.querySelectorAll('.counter');
     counters.forEach(counter => {
-        const target = +counter.getAttribute('data-target');
+        const target = +counter.dataset.target;
         let count = 0;
         const speed = 20;
-
         const update = () => {
             if (count < target) {
                 count += Math.ceil(target / 100);
                 if (count > target) count = target;
-                counter.innerText = count;
+                counter.textContent = count;
                 setTimeout(update, speed);
             } else {
-                counter.innerText = target;
+                counter.textContent = target;
             }
         };
         update();
     });
 </script>
 {% endblock %}
+
 
 
 

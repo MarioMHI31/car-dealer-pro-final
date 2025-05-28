@@ -22,7 +22,6 @@
                             </div>
                         {% endif %}
                     </div>
-
                     <!-- Favorite -->
                     {% if user.is_authenticated %}
                         <form method="post" action="{% url 'toggle_favorite' %}" class="favorite-form position-absolute top-0 end-0 m-2" data-car-id="{{ car.id }}">
@@ -32,7 +31,6 @@
                             </button>
                         </form>
                     {% endif %}
-
                     <!-- Conținut card -->
                     <div class="card-body">
                         <h5 class="card-title">{{ car.brand }} {{ car.model }}</h5>
